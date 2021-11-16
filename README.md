@@ -16,17 +16,17 @@
 
 * Consultar cliente:
 ```json
-GET /cliente/:id
+// GET /cliente/:id
 ```
 
 * Listar todos os clientes:
 ```json
-GET /clientes
+// GET /clientes
 ```
 
 * Cadastrar cliente:
 ```json
-POST /cliente
+// POST /cliente
 
 {
 	"nome": "Joel",
@@ -44,7 +44,7 @@ POST /cliente
 
 * Editar cliente:
 ```json
-PUT /cliente/:id
+// PUT /cliente/:id
 
 {
 	"nome": "Joel",
