@@ -1,9 +1,17 @@
-export default abstract class IDatabase {
-    criarCliente(nome: string, telefone: string, cpf: string) {}
+export interface endereco {
+    rua: string,
+    cidade: string,
+    numero: number,
+    cep: string,
+    uf: string
+}
 
-    removerCliente() {}
+export abstract class IDatabase {
+    criarCliente(nome: string, telefone: string, cpf: string, endereco: endereco) {}
 
-    editarCliente(id: string, nome: string, telefone: string, cpf: string) {}
+    removerCliente(id: string) {}
+
+    editarCliente(id: string, nome: string, telefone: string, cpf: string, endereco: endereco) {}
 
     consultarCliente(id: string) {}
 

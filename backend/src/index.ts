@@ -16,24 +16,32 @@ app.get('/cliente/:id', async (request, response) => {
     const idCliente = request.params.id;
     const res = await database.consultarCliente(idCliente);
 
-    return response.json({ clientes: res.rows }).send();
+    return response.json({ cliente: res.rows }).send();
 });
 
 app.post('/cliente', async (request, response) => {
     const database = new Postgres();
-    const { nome, telefone, cpf } = request.body;
-    const res = await database.criarCliente(nome, telefone, cpf);
+    const { nome, telefone, cpf, endereco } = request.body;
+    const res = await database.criarCliente(nome, telefone, cpf, endereco);
 
     return response.status(201).send();
 });
 
 app.put('/cliente/:id', async (request, response) => {
     const database = new Postgres();
-    const { nome, telefone, cpf } = request.body;
+    const { nome, telefone, cpf, endereco } = request.body;
     const idCliente = request.params.id;
-    const res = await database.editarCliente(idCliente, nome, telefone, cpf);
+    const res = await database.editarCliente(idCliente, nome, telefone, cpf, endereco);
 
-    return response.status(200).send();
+    return response.status(204).send();
+});
+
+app.delete('/cliente/:id', async (request, response) => {
+    const database = new Postgres();
+    const idCliente = request.params.id;
+    const res = await database.removerCliente(idCliente);
+
+    return response.status(204).send();
 });
 
 app.listen(3333);
