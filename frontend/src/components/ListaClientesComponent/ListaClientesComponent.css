@@ -1,0 +1,20 @@
+.clientsListContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.clientsList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.clientsListItem {
+    padding: 10px;
+    margin: 15px;
+    width: 75vh;
+
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}

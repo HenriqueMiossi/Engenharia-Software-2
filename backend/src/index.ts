@@ -1,14 +1,16 @@
 import express from 'express';
+import cors from 'cors';
 import Postgres from './Postgres';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get('/clientes', async (request, response) => {
     const database = new Postgres();
     const res = await database.listarTodosClientes();
 
-    return response.json({ clientes: res.rows }).send();
+    return response.json({ clientes: res.rows });
 });
 
 app.get('/cliente/:id', async (request, response) => {
@@ -16,7 +18,7 @@ app.get('/cliente/:id', async (request, response) => {
     const idCliente = request.params.id;
     const res = await database.consultarCliente(idCliente);
 
-    return response.json({ cliente: res.rows }).send();
+    return response.json({ cliente: res.rows });
 });
 
 app.post('/cliente', async (request, response) => {
