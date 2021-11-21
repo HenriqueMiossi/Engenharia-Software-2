@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS funcionario (
   	nome VARCHAR ( 50 ) NOT NULL,
   	telefone VARCHAR ( 15 ) NOT NULL,
   	cpf VARCHAR ( 14 ) UNIQUE NOT NULL,
-  	salarioBase REAL NOT NULL,
+  	salario_base REAL NOT NULL,
 	endereco_id INTEGER REFERENCES endereco ( id )
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS produto (
   	codigo VARCHAR ( 10 ) NOT NULL,
   	descricao VARCHAR ( 255 ) NOT NULL,
   	valor REAL NOT NULL,
-    quantidadeEstoque INTEGER NOT NULL,
-    estoqueMinimo INTEGER NOT NULL,
+    quantidade_estoque INTEGER NOT NULL,
+    estoque_minimo INTEGER NOT NULL,
     validade DATE NOT NULL
 );
