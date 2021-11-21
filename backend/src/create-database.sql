@@ -35,3 +35,17 @@ CREATE TABLE IF NOT EXISTS produto (
     estoque_minimo INTEGER NOT NULL,
     validade DATE NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS compra (
+	id serial PRIMARY KEY,
+  	cliente_id INTEGER REFERENCES cliente ( id ),
+  	funcionario_id INTEGER REFERENCES funcionario ( id ),
+  	forma_pagamento VARCHAR ( 8 ) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS carrinho (
+	id serial PRIMARY KEY,
+  	compra_id INTEGER REFERENCES compra ( id ),
+  	produto_id INTEGER REFERENCES produto ( id ),
+  	quantidade INTEGER NOT NULL
+);
