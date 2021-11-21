@@ -1,19 +1,44 @@
-import Pessoa from "./Pessoa";
+import Postgres from "./Postgres";
 
-export default class Funcionario extends Pessoa {
-  matricula: string;
-  salario_base: number;
+interface endereco {
+  rua: string;
+  cidade: string;
+  numero: number;
+  cep: string;
+  uf: string;
+}
 
-  constructor(
+export default class Funcionario {
+  criaFuncionario(nome: string, telefone: string, cpf: string, endereco: endereco, matricula: string, salario: number) {
+    const database = new Postgres();
+    database.criarFuncionario(nome, telefone, cpf, endereco, matricula, salario);
+  }
+
+  async consultaFuncionario(idFuncionario: string) {
+    const database = new Postgres();
+    return await database.consultarFuncionario(idFuncionario);
+  }
+
+  async listarTodosFuncionarios() {
+    const database = new Postgres();
+    return await database.listarTodosFuncionarios();
+  }
+
+  async removeFuncionario(idFuncionario: string) {
+    const database = new Postgres();
+    return database.removeFuncionario(idFuncionario);
+  }
+
+  editarFuncionario(
+    idCliente: string,
     nome: string,
     telefone: string,
     cpf: string,
+    endereco: endereco,
     matricula: string,
-    salario_base: number
+    salario: number
   ) {
-    super(nome, telefone, cpf);
-
-    this.matricula = matricula;
-    this.salario_base = salario_base;
+    const database = new Postgres();
+    database.editarFuncionario(idCliente, nome, telefone, cpf, endereco, matricula, salario);
   }
 }
