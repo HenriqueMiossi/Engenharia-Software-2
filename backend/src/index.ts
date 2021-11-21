@@ -3,6 +3,7 @@ import cors from "cors";
 
 import Cliente from "./Cliente";
 import Funcionario from "./Funcionario";
+import Produto from "./Produto";
 
 const app = express();
 app.use(express.json());
@@ -54,11 +55,6 @@ app.delete("/cliente/:id", async (request, response) => {
   return response.status(204).send();
 });
 
-
-
-
-
-
 app.get("/funcionarios", async (request, response) => {
   const funcionario = new Funcionario();
   const res = await funcionario.listarTodosFuncionarios();
@@ -103,6 +99,32 @@ app.delete("/funcionario/:id", async (request, response) => {
   const funcionario = new Funcionario();
   const idFuncionario = request.params.id;
   const res = await funcionario.removeFuncionario(idFuncionario);
+
+  return response.status(204).send();
+});
+
+
+
+
+app.get("/produtos", async (request, response) => {
+  const produto = new Produto();
+  const res = await produto.listarTodosProdutos();
+
+  return response.json({ produtos: res.rows });
+});
+
+app.post("/produto", (request, response) => {
+  const { codigo, descricao, valor, quantidade_estoque, estoque_minimo, validade } = request.body;
+  const produto = new Produto();
+  produto.criaProduto(codigo, descricao, valor, quantidade_estoque, estoque_minimo, validade);
+
+  return response.status(201).send();
+});
+
+app.delete("/produto/:id", async (request, response) => {
+  const produto = new Produto();
+  const idProduto = request.params.id;
+  const res = await produto.removeProduto(idProduto);
 
   return response.status(204).send();
 });

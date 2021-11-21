@@ -42,10 +42,3 @@ CREATE TABLE IF NOT EXISTS compra (
   	funcionario_id INTEGER REFERENCES funcionario ( id ),
   	forma_pagamento VARCHAR ( 8 ) NOT NULL
 );
-
-CREATE TABLE IF NOT EXISTS carrinho (
-	id serial PRIMARY KEY,
-  	compra_id INTEGER REFERENCES compra ( id ),
-  	produto_id INTEGER REFERENCES produto ( id ),
-  	quantidade INTEGER NOT NULL
-);

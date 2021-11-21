@@ -1,4 +1,4 @@
-import Postgres from "./Postgres";
+import PostgresFuncionario from "./PostgresFuncionario";
 
 interface endereco {
   rua: string;
@@ -10,22 +10,22 @@ interface endereco {
 
 export default class Funcionario {
   criaFuncionario(nome: string, telefone: string, cpf: string, endereco: endereco, matricula: string, salario: number) {
-    const database = new Postgres();
+    const database = new PostgresFuncionario();
     database.criarFuncionario(nome, telefone, cpf, endereco, matricula, salario);
   }
 
   async consultaFuncionario(idFuncionario: string) {
-    const database = new Postgres();
+    const database = new PostgresFuncionario();
     return await database.consultarFuncionario(idFuncionario);
   }
 
   async listarTodosFuncionarios() {
-    const database = new Postgres();
+    const database = new PostgresFuncionario();
     return await database.listarTodosFuncionarios();
   }
 
   async removeFuncionario(idFuncionario: string) {
-    const database = new Postgres();
+    const database = new PostgresFuncionario();
     return database.removeFuncionario(idFuncionario);
   }
 
@@ -38,7 +38,7 @@ export default class Funcionario {
     matricula: string,
     salario: number
   ) {
-    const database = new Postgres();
+    const database = new PostgresFuncionario();
     database.editarFuncionario(idCliente, nome, telefone, cpf, endereco, matricula, salario);
   }
 }
