@@ -1,5 +1,14 @@
-import { IDatabase, endereco } from './IDatabase';
+import { IDatabase } from './IDatabase';
 import { Pool } from 'pg';
+
+interface produto {
+  idProduto: number;
+  quantidade: number;
+}
+
+interface listaCompras {
+  itens: Array<produto>;
+}
 
 export default class PostgresProduto extends IDatabase {
   private pool: Pool;
@@ -67,6 +76,42 @@ export default class PostgresProduto extends IDatabase {
     const query = 'SELECT * FROM produto ORDER BY id ASC';
 
     const res = await this.pool.query(query);
+    this.pool.end;
+
+    return res;
+  }
+
+  async criaCompra(
+    idCliente: number,
+    idFuncionario: number,
+    formaPagamento: string,
+    itens: produto[]
+  ) {
+    this.conectar();
+
+    const query =
+      'INSERT INTO compra(cliente_id, funcionario_id, forma_pagamento) VALUES(' +
+      `'${idCliente}', ` +
+      `'${idFuncionario}', ` +
+      `'${formaPagamento}'` +
+      ');';
+
+    const res = await this.pool.query(query);
+
+    const compra_id = await this.pool.query(
+      `SELECT currval(pg_get_serial_sequence('compra', 'id'))`
+    );
+
+    itens.forEach(async produto => {
+      const item = 
+        'INSERT INTO item(compra_id, produto_id, quantidade) VALUES(' +
+        `${compra_id.rows[0].currval}, ` +
+        `'${produto.idProduto}', ` +
+        `'${produto.quantidade}'` +
+        ');'
+
+      await this.pool.query(item);
+    });
     this.pool.end;
 
     return res;

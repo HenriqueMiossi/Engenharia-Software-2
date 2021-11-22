@@ -4,6 +4,7 @@ import cors from "cors";
 import Cliente from "./Cliente";
 import Funcionario from "./Funcionario";
 import Produto from "./Produto";
+import Compra from "./Compra";
 
 const app = express();
 app.use(express.json());
@@ -127,6 +128,14 @@ app.delete("/produto/:id", async (request, response) => {
   const res = await produto.removeProduto(idProduto);
 
   return response.status(204).send();
+});
+
+app.post("/compra", (request, response) => {
+  const { idCliente, idFuncionario, formaPagamento, itens } = request.body;
+  const compra = new Compra();
+  compra.criaCompra(idCliente, idFuncionario, formaPagamento, itens);
+
+  return response.status(201).send();
 });
 
 app.listen(3333);
