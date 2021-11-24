@@ -41,4 +41,20 @@ export default class Funcionario {
     const database = new PostgresFuncionario();
     database.editarFuncionario(idCliente, nome, telefone, cpf, endereco, matricula, salario);
   }
+
+  async consultaSalario(idFuncionario: string) {
+    const database = new PostgresFuncionario();
+    const salario = await database.consultaSalario(idFuncionario);
+
+    if (salario.Vendas <= 1000) {
+      const comissao = salario.Vendas / 100 * 3;
+      
+      return comissao + salario.Salariobase;
+    }
+    else {
+      const comissao = salario.Vendas / 100 * 5;
+
+      return comissao + salario.Salariobase;
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import { IDatabase, endereco } from './IDatabase';
 import { Pool } from 'pg';
+import Compra from './Compra';
 
 export default class PostgresFuncionario extends IDatabase {
   private pool: Pool;
@@ -15,7 +16,7 @@ export default class PostgresFuncionario extends IDatabase {
   }
 
   private conectar() {
-    this.pool.connect((err) => {
+    this.pool.connect((err, client, done) => {
       if (err) {
         console.error('connection error', err.stack);
       } else {
@@ -138,5 +139,31 @@ export default class PostgresFuncionario extends IDatabase {
     this.pool.end;
 
     return res;
+  }
+
+  async consultaSalario(idFuncionario: string) {
+    this.conectar();
+    const compra = new Compra();
+
+    const queryCompras = `SELECT id FROM compra WHERE funcionario_id = ${idFuncionario}`;
+    const comprasExecutadas = await this.pool.query(queryCompras);
+    
+    let vendasTotais = 0;
+    
+    for (const item of comprasExecutadas.rows) {
+      const id = item.id;
+      const precoAtual = await compra.consultaPreco(id, 1);
+      vendasTotais += precoAtual[0];
+    }
+    const salarioBase = await this.pool.query(
+      `SELECT salario_base FROM funcionario WHERE id = ${idFuncionario}`
+    );
+
+    this.pool.end;
+
+    return {
+      "Vendas": vendasTotais,
+      "Salariobase": salarioBase.rows[0].salario_base
+    };
   }
 }

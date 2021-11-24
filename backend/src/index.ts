@@ -126,8 +126,16 @@ app.delete("/produto/:id", async (request, response) => {
   const produto = new Produto();
   const idProduto = request.params.id;
   const res = await produto.removeProduto(idProduto);
-
-  return response.status(204).send();
+  if (res.command == 'DELETE') {
+    return response.json({
+      "Response": "Produto deletado com sucesso"
+    }).send();
+  }
+  else {
+    return response.json({
+      "Response": "Nao foi possivel deletar produto solicitado pois ele contem uma compra associada"
+    }).send();
+  }
 });
 
 app.post("/compra", (request, response) => {
@@ -136,6 +144,30 @@ app.post("/compra", (request, response) => {
   compra.criaCompra(idCliente, idFuncionario, formaPagamento, itens);
 
   return response.status(201).send();
+});
+
+app.get("/compra/:id", async (request, response) => {
+  const compra = new Compra();
+  const { parcelas } = request.body;
+  const res = await compra.consultaPreco(request.params.id, parcelas);
+
+  if(res[1] == 0) {
+    return response.json({
+      "Valor da compra": res[0]
+    });
+  }
+  return response.json({
+    "Quantidade de parcelas": res[1],
+    "Valor da parcela": parseFloat(res[0].toFixed(2))
+  });
+});
+
+app.get("/funcionario/:id/salario", async (request, response) => {
+  const idFuncionario = request.params.id;
+  const funcionario = new Funcionario();
+  const res = await funcionario.consultaSalario(idFuncionario); 
+
+  return response.json(res);
 });
 
 app.listen(3333);

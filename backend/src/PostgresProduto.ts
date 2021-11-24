@@ -61,8 +61,29 @@ export default class PostgresProduto extends IDatabase {
 
   async removeProduto(id: string) {
     this.conectar();
-    const query =
-      `DELETE FROM produto WHERE id = ${id};`;
+
+    const verifyQuery = 
+      `SELECT id FROM item WHERE produto_id = ${id}`
+    
+    const verifyRes = await this.pool.query(verifyQuery);
+    if(verifyRes.rows.length == 0) {
+      const query =
+        `DELETE FROM produto WHERE id = ${id};`;
+
+      const res = await this.pool.query(query);
+      
+      return res;
+    }
+    
+    this.pool.end;
+
+    return verifyRes;
+  }
+
+  async listarTodosProdutos() {
+    this.conectar();
+
+    const query = 'SELECT * FROM produto ORDER BY id ASC';
 
     const res = await this.pool.query(query);
     this.pool.end;
@@ -70,10 +91,32 @@ export default class PostgresProduto extends IDatabase {
     return res;
   }
 
-  async listarTodosProdutos() {
+  async consultaCompra(id: string) {
     this.conectar();
 
-    const query = 'SELECT * FROM produto ORDER BY id ASC';
+    const query = `SELECT * FROM item WHERE compra_id = '${id}';`;
+
+    const res = await this.pool.query(query);
+    this.pool.end;
+
+    return res;
+  }
+
+  async consultaPreco(id: string) {
+    this.conectar();
+
+    const query = `SELECT valor FROM produto WHERE id = '${id}'`;
+
+    const res = await this.pool.query(query);
+    this.pool.end;
+
+    return res;
+  }
+
+  async consultaFormaPagamento(id: string) {
+    this.conectar();
+
+    const query = `SELECT forma_pagamento FROM compra WHERE id = '${id}'`;
 
     const res = await this.pool.query(query);
     this.pool.end;
