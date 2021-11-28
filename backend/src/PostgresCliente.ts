@@ -1,12 +1,12 @@
 import { IDatabase, endereco } from './IDatabase';
-import { Pool } from 'pg';
+import { Client } from 'pg';
 
 export default class PostgresCliente extends IDatabase {
-  private pool: Pool;
+  private client: Client;
 
   constructor() {
     super();
-    this.pool = new Pool({
+    this.client = new Client({
       port: 5432,
       user: 'postgres',
       password: 'docker',
@@ -15,7 +15,7 @@ export default class PostgresCliente extends IDatabase {
   }
 
   private conectar() {
-    this.pool.connect((err) => {
+    this.client.connect((err) => {
       if (err) {
         console.error('connection error', err.stack);
       } else {
@@ -47,8 +47,8 @@ export default class PostgresCliente extends IDatabase {
       `(SELECT currval(pg_get_serial_sequence('endereco', 'id')))` +
       ');';
 
-    const res = await this.pool.query(query);
-    this.pool.end;
+    const res = await this.client.query(query);
+    this.client.end;
 
     return res;
   }
@@ -56,7 +56,7 @@ export default class PostgresCliente extends IDatabase {
   async removeCliente(id: string) {
     this.conectar();
 
-    const endereco_id = await this.pool.query(
+    const endereco_id = await this.client.query(
       `SELECT endereco_id FROM cliente WHERE id = ${id}`
     );
 
@@ -67,8 +67,8 @@ export default class PostgresCliente extends IDatabase {
       `DELETE FROM endereco WHERE id = ${endereco_id.rows[0].endereco_id};`
       ;
 
-    const res = await this.pool.query(query);
-    this.pool.end;
+    const res = await this.client.query(query);
+    this.client.end;
 
     return res;
   }
@@ -82,7 +82,7 @@ export default class PostgresCliente extends IDatabase {
   ) {
     this.conectar();
 
-    const endereco_id = await this.pool.query(
+    const endereco_id = await this.client.query(
       `SELECT id FROM cliente WHERE endereco_id = ${id}`
     );
 
@@ -103,8 +103,8 @@ export default class PostgresCliente extends IDatabase {
       `, uf = '${endereco.uf}' ` +
       `WHERE id = ${endereco_id.rows[0].id};`;
 
-    const res = await this.pool.query(query);
-    this.pool.end;
+    const res = await this.client.query(query);
+    this.client.end;
 
     return res;
   }
@@ -117,8 +117,8 @@ export default class PostgresCliente extends IDatabase {
       'INNER JOIN endereco ON cliente.endereco_id = endereco.id ' +
       `WHERE cliente.id = ${id}`;
 
-    const res = await this.pool.query(query);
-    this.pool.end;
+    const res = await this.client.query(query);
+    this.client.end;
 
     return res;
   }
@@ -128,8 +128,8 @@ export default class PostgresCliente extends IDatabase {
 
     const query = 'SELECT * FROM cliente ORDER BY id ASC';
 
-    const res = await this.pool.query(query);
-    this.pool.end;
+    const res = await this.client.query(query);
+    this.client.end;
 
     return res;
   }

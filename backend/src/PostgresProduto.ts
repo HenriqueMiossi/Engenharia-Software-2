@@ -1,5 +1,5 @@
-import { IDatabase } from './IDatabase';
-import { Pool } from 'pg';
+import { IDatabase } from "./IDatabase";
+import { Pool } from "pg";
 
 interface produto {
   idProduto: number;
@@ -17,18 +17,18 @@ export default class PostgresProduto extends IDatabase {
     super();
     this.pool = new Pool({
       port: 5432,
-      user: 'postgres',
-      password: 'docker',
-      database: 'engsoft2',
+      user: "postgres",
+      password: "docker",
+      database: "engsoft2",
     });
   }
 
   private conectar() {
     this.pool.connect((err) => {
       if (err) {
-        console.error('connection error', err.stack);
+        console.error("connection error", err.stack);
       } else {
-        console.log('connected');
+        console.log("connected");
       }
     });
   }
@@ -44,14 +44,14 @@ export default class PostgresProduto extends IDatabase {
     this.conectar();
 
     const query =
-      'INSERT INTO produto(codigo, descricao, valor, quantidade_estoque, estoque_minimo, validade) VALUES(' +
+      "INSERT INTO produto(codigo, descricao, valor, quantidade_estoque, estoque_minimo, validade) VALUES(" +
       `'${codigo}', ` +
       `'${descricao}', ` +
       `'${valor}', ` +
       `'${quantidade_estoque}', ` +
       `'${estoque_minimo}', ` +
       `'${validade}'` +
-      ');';
+      ");";
 
     const res = await this.pool.query(query);
     this.pool.end;
@@ -62,19 +62,17 @@ export default class PostgresProduto extends IDatabase {
   async removeProduto(id: string) {
     this.conectar();
 
-    const verifyQuery = 
-      `SELECT id FROM item WHERE produto_id = ${id}`
-    
+    const verifyQuery = `SELECT id FROM item WHERE produto_id = ${id}`;
+
     const verifyRes = await this.pool.query(verifyQuery);
-    if(verifyRes.rows.length == 0) {
-      const query =
-        `DELETE FROM produto WHERE id = ${id};`;
+    if (verifyRes.rows.length == 0) {
+      const query = `DELETE FROM produto WHERE id = ${id};`;
 
       const res = await this.pool.query(query);
-      
+
       return res;
     }
-    
+
     this.pool.end;
 
     return verifyRes;
@@ -83,7 +81,7 @@ export default class PostgresProduto extends IDatabase {
   async listarTodosProdutos() {
     this.conectar();
 
-    const query = 'SELECT * FROM produto ORDER BY id ASC';
+    const query = "SELECT * FROM produto ORDER BY id ASC";
 
     const res = await this.pool.query(query);
     this.pool.end;
@@ -133,11 +131,12 @@ export default class PostgresProduto extends IDatabase {
     this.conectar();
 
     const query =
-      'INSERT INTO compra(cliente_id, funcionario_id, forma_pagamento) VALUES(' +
+      "INSERT INTO compra(cliente_id, funcionario_id, forma_pagamento, data_criacao) VALUES(" +
       `'${idCliente}', ` +
       `'${idFuncionario}', ` +
-      `'${formaPagamento}'` +
-      ');';
+      `'${formaPagamento}', ` +
+      `to_timestamp(${Date.now()} / 1000.0)` +
+      ");";
 
     const res = await this.pool.query(query);
 
@@ -145,13 +144,18 @@ export default class PostgresProduto extends IDatabase {
       `SELECT currval(pg_get_serial_sequence('compra', 'id'))`
     );
 
-    itens.forEach(async produto => {
-      const item = 
-        'INSERT INTO item(compra_id, produto_id, quantidade) VALUES(' +
+    itens.forEach(async (produto) => {
+      const quantidade = await this.pool.query(
+        `SELECT quantidade_estoque FROM produto WHERE id = ${produto.idProduto};`
+      );
+      const item =
+        "INSERT INTO item(compra_id, produto_id, quantidade) VALUES(" +
         `${compra_id.rows[0].currval}, ` +
         `'${produto.idProduto}', ` +
-        `'${produto.quantidade}'` +
-        ');'
+        `'${produto.quantidade}');` +
+        "UPDATE produto " +
+        `SET quantidade_estoque = ${quantidade.rows[0].quantidade_estoque - produto.quantidade} WHERE id = ${produto.idProduto}` +
+        ";";
 
       await this.pool.query(item);
     });

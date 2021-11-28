@@ -5,6 +5,7 @@ import Cliente from "./Cliente";
 import Funcionario from "./Funcionario";
 import Produto from "./Produto";
 import Compra from "./Compra";
+import Relatorios from "./Relatorios";
 
 const app = express();
 app.use(express.json());
@@ -168,6 +169,21 @@ app.get("/funcionario/:id/salario", async (request, response) => {
   const res = await funcionario.consultaSalario(idFuncionario); 
 
   return response.json(res);
+});
+
+app.get("/relatorios/:de/:ate", async (request, response) => {
+  const relatorios = new Relatorios();
+  const clientes = await relatorios.getClientesComCompras();
+  const produtos = await relatorios.getProdutosAbaixoEstoqueMinimo();
+  const pagamento = await relatorios.getFolhaPagamento();
+  const vendas = await relatorios.getComprasPorPeriodo(request.params.de, request.params.ate);
+
+  return response.json({
+    "Clientes com compras": clientes,
+    "Compras no periodo": vendas,
+    "Produtos abaixo do estoque minimo": produtos,
+    "Folha de pagamento": pagamento
+  });
 });
 
 app.listen(3333);

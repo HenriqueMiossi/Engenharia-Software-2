@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS compra (
 	id serial PRIMARY KEY,
   	cliente_id INTEGER REFERENCES cliente ( id ),
   	funcionario_id INTEGER REFERENCES funcionario ( id ),
-  	forma_pagamento VARCHAR ( 8 ) NOT NULL
+  	forma_pagamento VARCHAR ( 8 ) NOT NULL,
+  	data_criacao DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS item (
