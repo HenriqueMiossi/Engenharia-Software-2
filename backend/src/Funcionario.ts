@@ -24,9 +24,9 @@ export default class Funcionario {
     return await database.listarTodosFuncionarios();
   }
 
-  async removeFuncionario(idFuncionario: string) {
+  removeFuncionario(idFuncionario: string) {
     const database = new PostgresFuncionario();
-    return database.removeFuncionario(idFuncionario);
+    database.removeFuncionario(idFuncionario);
   }
 
   editarFuncionario(

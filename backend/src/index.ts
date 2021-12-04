@@ -52,7 +52,7 @@ app.put("/cliente/:id", async (request, response) => {
 app.delete("/cliente/:id", async (request, response) => {
   const cliente = new Cliente();
   const idCliente = request.params.id;
-  const res = await cliente.removeCliente(idCliente);
+  cliente.removeCliente(idCliente);
 
   return response.status(204).send();
 });
@@ -100,13 +100,10 @@ app.put("/funcionario/:id", async (request, response) => {
 app.delete("/funcionario/:id", async (request, response) => {
   const funcionario = new Funcionario();
   const idFuncionario = request.params.id;
-  const res = await funcionario.removeFuncionario(idFuncionario);
+  await funcionario.removeFuncionario(idFuncionario);
 
   return response.status(204).send();
 });
-
-
-
 
 app.get("/produtos", async (request, response) => {
   const produto = new Produto();
@@ -171,18 +168,39 @@ app.get("/funcionario/:id/salario", async (request, response) => {
   return response.json(res);
 });
 
-app.get("/relatorios/:de/:ate", async (request, response) => {
+app.get("/relatorios/clientes", async (request, response) => {
   const relatorios = new Relatorios();
   const clientes = await relatorios.getClientesComCompras();
-  const produtos = await relatorios.getProdutosAbaixoEstoqueMinimo();
-  const pagamento = await relatorios.getFolhaPagamento();
-  const vendas = await relatorios.getComprasPorPeriodo(request.params.de, request.params.ate);
 
   return response.json({
     "Clientes com compras": clientes,
-    "Compras no periodo": vendas,
-    "Produtos abaixo do estoque minimo": produtos,
+  });
+});
+
+app.get("/relatorios/produtos", async (request, response) => {
+  const relatorios = new Relatorios();
+  const produtos = await relatorios.getProdutosAbaixoEstoqueMinimo();
+
+  return response.json({
+    "Produtos abaixo do estoque minimo": produtos
+  });
+});
+
+app.get("/relatorios/pagamento", async (request, response) => {
+  const relatorios = new Relatorios();
+  const pagamento = await relatorios.getFolhaPagamento();
+
+  return response.json({
     "Folha de pagamento": pagamento
+  });
+});
+
+app.get("/relatorios/vendas/:de/:ate", async (request, response) => {
+  const relatorios = new Relatorios();
+  const vendas = await relatorios.getComprasPorPeriodo(request.params.de, request.params.ate);
+
+  return response.json({
+    "Compras no periodo": vendas
   });
 });
 

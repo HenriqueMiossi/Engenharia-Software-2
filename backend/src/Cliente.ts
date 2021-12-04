@@ -24,9 +24,9 @@ export default class Cliente {
     return await database.listarTodosClientes();
   }
 
-  async removeCliente(idCliente: string) {
+  removeCliente(idCliente: string) {
     const database = new PostgresCliente();
-    return database.removeCliente(idCliente);
+    database.removeCliente(idCliente);
   }
 
   editarCliente(
